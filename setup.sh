@@ -1,0 +1,6 @@
+AUTH0_DOMAIN = 'jobportal.eu.auth0.com'
+ALGORITHMS = ['RS256']
+API_AUDIENCE = 'jobportal'
+CLIENT_ID = 'gGNKCnKztNeL2AYEwFQSfMOVZQwlVeMd'
+CLIENT_SECRET = 'qnN0J-Lbj3Sm7LpaQEaUPNTHuhJubageNAirDQ9I47FoU_e998FuD9eb_QLUZdY7'
+
