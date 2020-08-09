@@ -3,11 +3,13 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
+import os
 
 
-AUTH0_DOMAIN = 'jobportal.eu.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'jobportal'
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+ALGORITHMS = os.environ.get('ALGORITHMS')
+API_AUDIENCE = os.environ.get('API_AUDIENCE')
+
 
 # AuthError Exception
 class AuthError(Exception):
@@ -47,6 +49,7 @@ def get_token_auth_header():
     token = parts[1]
     return token
 
+
 # Check permissions accorrding to RBAC on Auth0
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
@@ -61,6 +64,7 @@ def check_permissions(permission, payload):
             'description': 'Permission not found.'
         }, 401)
     return True
+
 
 # Veryfy jwt token
 def verify_decode_jwt(token):
@@ -104,7 +108,8 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Incorrect claims. \
+                Please, check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
@@ -115,6 +120,7 @@ def verify_decode_jwt(token):
                 'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
             }, 401)
+
 
 # Decorator for Flask APIs
 def requires_auth(permission=''):

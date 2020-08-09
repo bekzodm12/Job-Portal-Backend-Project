@@ -1,18 +1,22 @@
-'''
-Company table
-Candidate table
-Vacancy table --> FK company ID (one-to-many) | job description, requirements, benefits etc.
-Applications table --> FK vacancy ID, FK candidate ID (many-to-many) | cover letter
-'''
 import os
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey, create_engine
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    create_engine
+)
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
 
-# Connection instructions - uncomment the two lines below to work on local machine
-#database_name = "jobportal"
-#database_path = "postgres://{}/{}".format('postgres:mb@localhost:5432', database_name)
+# Connection instructions
+# uncomment the two lines below to work on local machine
+# database_name = "jobportal"
+# database_path = "postgres://{}/{}". \
+#     format('postgres:mb@localhost:5432', database_name)
 
 # Database on Heroku
 database_path = os.environ['DATABASE_URL']
@@ -23,6 +27,8 @@ db = SQLAlchemy()
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
+
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -31,11 +37,35 @@ def setup_db(app, database_path=database_path):
     db.create_all()
     migrate = Migrate(app, db)
 
+
+'''
+Extend the base Model class to add common methods
+'''
+
+
+class commonMethods(db.Model):
+    __abstract__ = True
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+
+
 '''
 Company
 
 '''
-class Company(db.Model):  
+
+
+class Company(commonMethods):
     __tablename__ = 'companies'
 
     id = Column(Integer, primary_key=True)
@@ -52,12 +82,14 @@ class Company(db.Model):
     website_link = Column(String)
     description = Column(String)
     seeking_employee = Column(Boolean)
-    vacancies = db.relationship('Vacancy', backref=db.backref('company', lazy=True))
-    applications = db.relationship('Application', backref=db.backref('companies'), lazy=True)
+    vacancies = db.relationship(
+        'Vacancy', backref=db.backref('company', lazy=True))
+    applications = db.relationship(
+        'Application', backref=db.backref('companies'), lazy=True)
 
-    def __init__(self, name, industry, employee, city, region, \
-                address, email, phone, logo_link, facebook_link, \
-                website_link, description, seeking_employee):
+    def __init__(self, name, industry, employee, city, region,
+                 address, email, phone, logo_link, facebook_link,
+                 website_link, description, seeking_employee):
         self.name = name
         self.industry = industry
         self.employee = employee
@@ -71,17 +103,6 @@ class Company(db.Model):
         self.website_link = website_link
         self.description = description
         self.seeking_employee = seeking_employee
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
     def format(self):
         return {
@@ -101,13 +122,13 @@ class Company(db.Model):
             'seeking_employee': self.seeking_employee
         }
 
- 
 
 '''
 Candidate
 '''
 
-class Candidate(db.Model):
+
+class Candidate(commonMethods):
     __tablename__ = 'candidates'
 
     id = Column(Integer, primary_key=True)
@@ -126,11 +147,13 @@ class Candidate(db.Model):
     seeking_job = Column(Boolean)
     desired_salary = Column(Integer)
     desired_industry = Column(String)
-    applications = db.relationship('Application', backref=db.backref('candidate'), lazy=True)
-    
-    def __init__(self, name, surname, date_of_birth, city, region, email, phone, \
-                facebook_link, linkedin_link, address, work_experience, education, \
-                seeking_job, desired_salary, desired_industry):
+    applications = db.relationship(
+        'Application', backref=db.backref('candidate'), lazy=True)
+
+    def __init__(self, name, surname, date_of_birth, city, region, email,
+                 phone, facebook_link, linkedin_link, address,
+                 work_experience, education, seeking_job,
+                 desired_salary, desired_industry):
         self.name = name
         self.surname = surname
         self.date_of_birth = date_of_birth
@@ -146,17 +169,6 @@ class Candidate(db.Model):
         self.seeking_job = seeking_job
         self.desired_salary = desired_salary
         self.desired_industry = desired_industry
-    
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
     def format(self):
         return {
@@ -178,11 +190,13 @@ class Candidate(db.Model):
             'desired_industry': self.desired_industry
         }
 
+
 '''
 Vacancy
 '''
 
-class Vacancy(db.Model):
+
+class Vacancy(commonMethods):
     __tablename__ = 'vacancies'
 
     id = Column(Integer, primary_key=True)
@@ -195,10 +209,11 @@ class Vacancy(db.Model):
     min_salary = Column(Integer)
     date_posted = Column(DateTime)
     company_id = Column(Integer, ForeignKey('companies.id'), nullable=False)
-    applications = db.relationship('Application', backref=db.backref('vacancies'), lazy=True)
+    applications = db.relationship(
+        'Application', backref=db.backref('vacancies'), lazy=True)
 
-    def __init__(self, job_title, job_description, requirements, benefits, \
-                city, region, min_salary, date_posted, company_id):
+    def __init__(self, job_title, job_description, requirements, benefits,
+                 city, region, min_salary, date_posted, company_id):
         self.job_title = job_title
         self.job_description = job_description
         self.requirements = requirements
@@ -208,17 +223,6 @@ class Vacancy(db.Model):
         self.min_salary = min_salary
         self.date_posted = date_posted
         self.company_id = company_id
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit() 
 
     def format_long(self):
         return {
@@ -251,7 +255,9 @@ class Vacancy(db.Model):
 '''
 Application
 '''
-class Application(db.Model):
+
+
+class Application(commonMethods):
     __tablename__ = 'applications'
 
     id = Column(Integer, primary_key=True)
@@ -261,20 +267,11 @@ class Application(db.Model):
     cover_letter = Column(String)
     date_submitted = Column(DateTime)
 
-    def __init__(self, company_id, vacancy_id, candidate_id, cover_letter, date_submitted):
+    def __init__(self, company_id, vacancy_id, candidate_id,
+                 cover_letter, date_submitted):
         self.company_id = company_id
         self.vacancy_id = vacancy_id
         self.candidate_id = candidate_id
         self.cover_letter = cover_letter
         self.date_submitted = date_submitted
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit() 
-
-   
 

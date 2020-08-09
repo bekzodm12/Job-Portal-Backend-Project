@@ -2,9 +2,15 @@ import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
-
 from app import create_app
-from models import setup_db, Company, Candidate, Vacancy, Application
+from models import (
+    setup_db,
+    Company,
+    Candidate,
+    Vacancy,
+    Application
+)
+
 
 class JobPortalTestCase(unittest.TestCase):
     '''This class represents the jobportal test case'''
@@ -14,18 +20,24 @@ class JobPortalTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "jobportal_test"
-        self.database_path = "postgres://{}/{}".format('postgres:mb@localhost:5432', self.database_name)
+        self.database_path = "postgres://{}/{}". \
+            format('postgres:mb@localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
-        self.test_user_company = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkpYN3U0NkUxMW9PSXRpVVpUemdKWiJ9.eyJpc3MiOiJodHRwczovL2pvYnBvcnRhbC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWYyNmZhM2U1M2E1OTkwMDM3OTU0Y2MzIiwiYXVkIjoiam9icG9ydGFsIiwiaWF0IjoxNTk2NzIwMTUzLCJleHAiOjE1OTY3OTIxNTMsImF6cCI6ImdHTktDbkt6dE5lTDJBWUV3RlFTZk1PVlpRd2xWZU1kIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6Y29tcGFuaWVzIiwiZGVsZXRlOnZhY2FuY2llcyIsImdldDpjYW5kaWRhdGVzIiwicGF0Y2g6Y29tcGFuaWVzIiwicGF0Y2g6dmFjYW5jaWVzIiwicG9zdDpjb21wYW5pZXMiLCJwb3N0OnZhY2FuY2llcyJdfQ.pVYHXx_txEYcH_LUYTWY3AToAzkeLhcBgs0ZQV1hx9BF8oN7_gxaveTMjFuBr4cq0A5nAnWlGIqep5a_hOdIcsxUnQwKHVkTQaBu6X10SxfJmMwuhHOLA0n9gaxPxDpLVFXNQFTRwVDW25p-TvHGib9VmNO_zZd9cbjM87go93P7djN8JByk79dGZ_HJ-SfZWp7u_UO7ItZAT9Ps6uIy1ekqAjOVIZqwonP7sv-53nldpHpe8V0UpqXd1f6ogqblAcR1VxedW4Utl2cRMaPc_LutibXJjEdHQOr6vafqMpyq2X5n3rkCg_LyJ1FszW6VbieE8DNSTlVZ_6SkixXzhQ'
-        self.test_user_candidate = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkpYN3U0NkUxMW9PSXRpVVpUemdKWiJ9.eyJpc3MiOiJodHRwczovL2pvYnBvcnRhbC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWYyNzMyZWQ3M2E4YmIwMDNkMjE5ZGE1IiwiYXVkIjoiam9icG9ydGFsIiwiaWF0IjoxNTk2NzIwMjAwLCJleHAiOjE1OTY3OTIyMDAsImF6cCI6ImdHTktDbkt6dE5lTDJBWUV3RlFTZk1PVlpRd2xWZU1kIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YXBwbGljYXRpb24iLCJkZWxldGU6Y2FuZGlkYXRlcyIsImdldDphcHBsaWNhdGlvbnMiLCJwYXRjaDpjYW5kaWRhdGVzIiwicG9zdDphcHBsaWNhdGlvbiIsInBvc3Q6Y2FuZGlkYXRlcyJdfQ.tw9zQSyNSwL15sj0ZMQzDFwKU7611vwChPwm_4eVbit8PJI8MPILcdSvbUt9s2Y_pkjOv94Y1QqOEvgVnuVviLcXf1SPl9wolzPQLKVzxpGGIp1xdE9WtclmLGlxWfWWqCiKEFNCiR5WzvsM_5UGkMMiupmVYOe2KNt3Hszgb4VbdSZED76KSBYrLdDFWA_hYUhzB-vzdN5baL_rpoYYGibZg883zKDqi2tuWwjAo439tuj4skPJTXmGVlqzaawA4B37LMtmS4zvbJNyAnwKoxFwu_SDNk-SUCpq7xkrB10KF6lWci0yFawOTPmmuy3K166czi5nWT2Wn_cOIB-8VQ'
+        self.test_user_company = os.environ['USER_TOKEN_COMPANY']
+        self.test_user_candidate = os.environ['USER_TOKEN_CANDIDATE']
 
         self.new_company = {
             "address": "1600 Amphitheatre Parkway",
             "city": "Mountain View",
-            "description": "Google LLC is an American multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware.",
+            "description": "Google LLC is an American multinational \
+                technology \
+                company that specializes in Internet-related services and \
+                products, which include online advertising technologies, \
+                a search engine, cloud computing, software, and hardware.",
             "email": "info@gmail.com",
             "employee": 10000,
-            "facebook_link": "https://www.facebook.com/GoogleDE/?brand_redir=104958162837",
+            "facebook_link":
+                "https://www.facebook.com/GoogleDE/?brand_redir=104958162837",
             "industry": "IT",
             "name": "Google",
             "region": "California",
@@ -36,7 +48,7 @@ class JobPortalTestCase(unittest.TestCase):
         self.edit_company = {
             "name": "Google Inc."
         }
-        
+
         self.new_candidate = {
             "name": "Max",
             "surname": "Musterman"
@@ -72,7 +84,7 @@ class JobPortalTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-    
+
     '''
     POST
     '''
@@ -81,17 +93,21 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_add_new_company(self):
         '''Tests successful request to post a new company into the database'''
-        res = self.client().post('/companies', json = self.new_company, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().post('/companies', json=self.new_company,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-    
+
     def test_error_404_not_found_when_add_company(self):
         '''Tests error 404 for incorrect route'''
-        res = self.client().post('/company', json = self.new_company, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().post('/company', json=self.new_company,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -102,9 +118,12 @@ class JobPortalTestCase(unittest.TestCase):
     Candidate
     '''
     def test_add_new_candidate(self):
-        '''Tests successful request to post a new candidate profile into the database'''
-        res = self.client().post('/candidates', json = self.new_candidate, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        '''Tests successful request to post a new
+        candidate profile into the database'''
+        res = self.client().post('/candidates', json=self.new_candidate,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -112,8 +131,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_404_not_found_add_new_candidate(self):
         '''Tests error 404 for incorrect route'''
-        res = self.client().post('/candidate', json = self.new_candidate, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().post('/candidate', json=self.new_candidate,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -125,8 +146,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_add_new_vacancy(self):
         '''Tests successful request to post a new vacancy into the database'''
-        res = self.client().post('/vacancies', json = self.new_vacancy, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().post('/vacancies', json=self.new_vacancy,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -134,38 +157,45 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_404_not_found_when_add_new_vacancy(self):
         '''Tests error 404 for incorrect route'''
-        res = self.client().post('/vacancy', json = self.new_vacancy, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().post('/vacancy', json=self.new_vacancy,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not found')
-    
+
     '''
     Application
     '''
     def test_add_new_application(self):
-        '''Tests successful request to post a new candidate application by vacancy id'''
-        res = self.client().post('/vacancies/1/applications', json = self.new_application, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        '''Tests successful request to post
+        a new candidate application by vacancy id'''
+        res = self.client().post('/vacancies/1/applications',
+                                 json=self.new_application,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
-    
     def test_error_406_not_acceptable_when_post_application(self):
         '''Tests error 406 when posting a duplicate application'''
-        res = self.client().post('/vacancies/1/applications', json = self.new_application, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().post('/vacancies/1/applications',
+                                 json=self.new_application,
+                                 headers={
+                                     'Authorization': 'Bearer '
+                                     + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 406)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not acceptable')
-    
-    
+
     '''
     GET
     '''
@@ -274,8 +304,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_get_applications_by_candidate_id(self):
         '''Tests successful request for applications by candidate id'''
-        res = self.client().get('/candidates/1/applications', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().get('/candidates/1/applications',
+                                headers={
+                                    'Authorization': 'Bearer '
+                                    + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -283,8 +315,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_404_not_found_when_get_applications_by_candidate_id(self):
         '''Tests error 404 when getting applications by invalid candidate id'''
-        res = self.client().get('/candidates/1000/applications', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().get('/candidates/1000/applications',
+                                headers={
+                                    'Authorization': 'Bearer '
+                                    + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -293,8 +327,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_get_applications_by_vacancy_id(self):
         '''Tests successful request of applications by vacancy id'''
-        res = self.client().get('/vacancies/1/applications', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().get('/vacancies/1/applications',
+                                headers={
+                                    'Authorization': 'Bearer '
+                                    + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -302,8 +338,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_404_not_found_when_get_applications_by_vacancy_id(self):
         '''Tests error 404 when getting applications by invalid vacancy id'''
-        res = self.client().get('/vacancies/1000/applications', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().get('/vacancies/1000/applications',
+                                headers={
+                                    'Authorization': 'Bearer '
+                                    + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -319,18 +357,22 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_update_company_by_id(self):
         '''Tests successful update of company information by id'''
-        res = self.client().patch('/companies/1', json = self.edit_company, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().patch('/companies/1', json=self.edit_company,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_company})
         data = json.loads(res.data)
-       
+
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(data['id'], 1)
-        
+
     def test_error_404_not_found_when_update_company(self):
         '''Test error 404 when trying to edit inexisting company id'''
-        res = self.client().patch('/companies/1000', json = self.edit_company, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().patch('/companies/1000', json=self.edit_company,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
@@ -342,8 +384,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_update_candidate_by_id(self):
         '''Tests successful update of a candidate information by id'''
-        res = self.client().patch('/candidates/1', json = self.edit_candidate, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().patch('/candidates/1', json=self.edit_candidate,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -352,8 +396,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_422_unprocessable_when_update_candidate(self):
         '''Test error 422 when trying to edit inexisting candidate id'''
-        res = self.client().patch('/candidates/1000', json = self.edit_candidate, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().patch('/candidates/1000', json=self.edit_candidate,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -365,8 +411,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_update_vacancy_by_id(self):
         '''Tests successful update of a vacancy information by id'''
-        res = self.client().patch('/vacancies/1', json = self.edit_vacancy, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().patch('/vacancies/1', json=self.edit_vacancy,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -375,8 +423,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_422_unprocessable_when_update_vacancy(self):
         '''Test error 422 when vacancy id is not valid'''
-        res = self.client().patch('/vacancies/1000', json = self.edit_vacancy, \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().patch('/vacancies/1000', json=self.edit_vacancy,
+                                  headers={
+                                      'Authorization': 'Bearer '
+                                      + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -389,11 +439,13 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     Application
     '''
-    
+
     def test_delete_application(self):
         '''Tests successful deleting of an application'''
-        res = self.client().delete('/applications/1', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().delete('/applications/1',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -401,9 +453,12 @@ class JobPortalTestCase(unittest.TestCase):
         self.assertEqual(data['id'], 1)
 
     def test_error_422_when_deleting_application(self):
-        '''Tests error 422 when deleting application by invalid application id'''
-        res = self.client().delete('/applications/1000', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        '''Tests error 422 when deleting application
+        by invalid application id'''
+        res = self.client().delete('/applications/1000',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -415,8 +470,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_delete_vacancy_by_id(self):
         '''Tests successful deleting of a vacancy by id'''
-        res = self.client().delete('/vacancies/1', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().delete('/vacancies/1',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_company})
         data = json.loads(res.data)
         vacancy = Vacancy.query.filter(Vacancy.id == 1).one_or_none()
 
@@ -427,8 +484,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_422_unprocessable_when_delete_vacancy(self):
         '''Tests error 422 when vacancy id does not exist'''
-        res = self.client().delete('/vacancies/1000', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().delete('/vacancies/1000',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -440,8 +499,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_delete_company_by_id(self):
         '''Tests successful deleting of a company by id'''
-        res = self.client().delete('/companies/1', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().delete('/companies/1',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_company})
         data = json.loads(res.data)
         company = Company.query.filter(Company.id == 1).one_or_none()
 
@@ -452,8 +513,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_422_unprocessable_when_delete_company(self):
         '''Tests error 422 when company id does not exist'''
-        res = self.client().delete('/companies/1000', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_company})
+        res = self.client().delete('/companies/1000',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_company})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -465,8 +528,10 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_delete_candidate_by_id(self):
         '''Tests successful deleting of a candidate profile by id'''
-        res = self.client().delete('/candidates/1', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().delete('/candidates/1',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_candidate})
         data = json.loads(res.data)
         candidate = Candidate.query.filter(Candidate.id == 1).one_or_none()
 
@@ -477,8 +542,10 @@ class JobPortalTestCase(unittest.TestCase):
 
     def test_error_422_unprocessable_when_delete_candidate(self):
         '''Tests error 422 when candidate id does not exist'''
-        res = self.client().delete('/candidates/1000', \
-            headers = {'Authorization': 'Bearer ' + self.test_user_candidate})
+        res = self.client().delete('/candidates/1000',
+                                   headers={
+                                       'Authorization': 'Bearer '
+                                       + self.test_user_candidate})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
@@ -493,8 +560,8 @@ class JobPortalTestCase(unittest.TestCase):
     '''
     def test_error_401_token_not_found_company(self):
         '''Tests error 401 when token is not provided for company user'''
-        res = self.client().post('/companies', json = self.new_company, \
-            headers = {'Authorization': 'Bearer'})
+        res = self.client().post('/companies', json=self.new_company,
+                                 headers={'Authorization': 'Bearer'})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -502,21 +569,23 @@ class JobPortalTestCase(unittest.TestCase):
         self.assertEqual(data['description'], 'Token not found.')
 
     def test_error_401_no_authorization_header_company(self):
-        '''Tests error 401 when authorization header is missing for company user'''
-        res = self.client().post('/companies', json = self.new_company)
+        '''Tests error 401 when authorization
+        header is missing for company user'''
+        res = self.client().post('/companies', json=self.new_company)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['code'], 'authorization_header_missing')
-        self.assertEqual(data['description'], 'Authorization header is expected.')
+        self.assertEqual(data['description'],
+                         'Authorization header is expected.')
 
     '''
     Candidate
     '''
     def test_error_401_token_not_found_candidate(self):
         '''Tests error 401 when token is not provided for candidate user'''
-        res = self.client().post('/candidates', json = self.new_candidate, \
-            headers = {'Authorization': 'Bearer'})
+        res = self.client().post('/candidates', json=self.new_candidate,
+                                 headers={'Authorization': 'Bearer'})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
@@ -524,62 +593,86 @@ class JobPortalTestCase(unittest.TestCase):
         self.assertEqual(data['description'], 'Token not found.')
 
     def test_error_401_no_authorization_header_candidate(self):
-        '''Tests error 401 when authorization header is missing for candidate user'''
-        res = self.client().post('/candidates', json = self.new_candidate)
+        '''Tests error 401 when authorization header
+        is missing for candidate user'''
+        res = self.client().post('/candidates',
+                                 json=self.new_candidate)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(data['code'], 'authorization_header_missing')
-        self.assertEqual(data['description'], 'Authorization header is expected.')
+        self.assertEqual(data['description'],
+                         'Authorization header is expected.')
+
 
 def suite():
-    '''The suite allows to customize order of execution of test cases because 
+    '''The suite allows to customize order of execution of test cases because
     some of them depend on specific state in the database.'''
     suite = unittest.TestSuite()
     suite.addTest(JobPortalTestCase('test_add_new_company'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_add_company'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_add_company'))
     suite.addTest(JobPortalTestCase('test_add_new_candidate'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_add_new_candidate'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_add_new_candidate'))
     suite.addTest(JobPortalTestCase('test_add_new_vacancy'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_add_new_vacancy'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_add_new_vacancy'))
     suite.addTest(JobPortalTestCase('test_add_new_application'))
-    suite.addTest(JobPortalTestCase('test_error_406_not_acceptable_when_post_application'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_406_not_acceptable_when_post_application'))
     suite.addTest(JobPortalTestCase('test_get_companies'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_companies'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_companies'))
     suite.addTest(JobPortalTestCase('test_get_company_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_company_by_id'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_company_by_id'))
     suite.addTest(JobPortalTestCase('test_get_candidate_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_candidate_by_id'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_candidate_by_id'))
     suite.addTest(JobPortalTestCase('test_get_vacancies'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_vacancies'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_vacancies'))
     suite.addTest(JobPortalTestCase('test_get_vacancy_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_vacancy_by_id'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_vacancy_by_id'))
     suite.addTest(JobPortalTestCase('test_get_applications_by_candidate_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_applications_by_candidate_id'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_applications_by_candidate_id'))
     suite.addTest(JobPortalTestCase('test_get_applications_by_vacancy_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_get_applications_by_vacancy_id'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_get_applications_by_vacancy_id'))
     suite.addTest(JobPortalTestCase('test_update_company_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_404_not_found_when_update_company'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_404_not_found_when_update_company'))
     suite.addTest(JobPortalTestCase('test_update_candidate_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_422_unprocessable_when_update_candidate'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_unprocessable_when_update_candidate'))
     suite.addTest(JobPortalTestCase('test_update_vacancy_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_422_unprocessable_when_update_vacancy'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_unprocessable_when_update_vacancy'))
     suite.addTest(JobPortalTestCase('test_delete_application'))
-    suite.addTest(JobPortalTestCase('test_error_422_when_deleting_application'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_when_deleting_application'))
     suite.addTest(JobPortalTestCase('test_delete_vacancy_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_422_unprocessable_when_delete_vacancy'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_unprocessable_when_delete_vacancy'))
     suite.addTest(JobPortalTestCase('test_delete_company_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_422_unprocessable_when_delete_company'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_unprocessable_when_delete_company'))
     suite.addTest(JobPortalTestCase('test_delete_candidate_by_id'))
-    suite.addTest(JobPortalTestCase('test_error_422_unprocessable_when_delete_candidate'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_422_unprocessable_when_delete_candidate'))
     suite.addTest(JobPortalTestCase('test_error_401_token_not_found_company'))
-    suite.addTest(JobPortalTestCase('test_error_401_no_authorization_header_company'))
-    suite.addTest(JobPortalTestCase('test_error_401_token_not_found_candidate'))
-    suite.addTest(JobPortalTestCase('test_error_401_no_authorization_header_candidate'))
-    
-    
+    suite.addTest(JobPortalTestCase(
+        'test_error_401_no_authorization_header_company'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_401_token_not_found_candidate'))
+    suite.addTest(JobPortalTestCase(
+        'test_error_401_no_authorization_header_candidate'))
+
     return suite
-       
+
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()

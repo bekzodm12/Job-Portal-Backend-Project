@@ -10,17 +10,17 @@ Authorization of users is enabled via Auth0 in which two seperate roles (compani
 
 ## Project dependencies
 
-The project depends on the latest version of Python 3.x which we recommend to download and install from their official website.
+The project depends on the latest version of Python 3.x which we recommend to download and install from their official website and use a virtual environment to install all dependencies.
 
 ## PIP dependencies
 
 After having successfully installed Python, navigate to the root folder of the project (the project must be forked to your local machine) and run the following in a command line:
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-This will install all the required packages to work with the project.
+This will install all the required packages to your virtual environment to work with the project.
 
 ## Database setup
 
@@ -42,18 +42,45 @@ flask db upgrade
 
 This will create all necessary tables and relationships to work with the project.
 
+## Data Modelling
+
+The data model of the project is provided in `models.py` file in the root folder. The following schema for the database and helper methods are used for API behaviour:
+
+- There are four tables created: Company, Candidate, Vacancy, and Application.
+- The Company table is used by the role 'Company' to add the company profile, update and delete them from the database. The information can be retrieved by any user.
+- The Candidate table stored all the information about candidates and is used by 'Candidate' user to create, update and delete their profiles.
+- The Vacancy table is used by 'Company' user to create, update and delete job vacancies after they have created their company profile. This table is also used by any user to view vacanies as a list and details of a particular vacancy.
+- The vacancy table has a foreign key on the Company table for company_id.
+- The Application table is used by a 'Candidate' user to create and delete applications for vacancies, which are initially posted by 'Company' user.
+- The Application table has three foreign keys: one on the Company table for company_id, one on the Candidate table for candidate_id, and one on the Vacancy table for vacancy_id. 
+
 ## Running the local development server
 
-From the root folder of the project provide environmental variables in the command line:
+All necessary credential to run the project are provided in the `setup.sh` file. The credentials can be enabled by running the following command:
 
+```
+source setup.sh
+```
+
+To run the API server on a local development environmental the following commands must be additionally executed:
+
+### On Linux: export
 ```
 export FLASK_APP=app.py
 export FLASK_ENV=development
 ```
 
+### On Windows: set
+```
+set FLASK_APP=app.py
+set FLASK_ENV=development
+```
+
+### API Server
+
 All accessable endpoints of the project are located in the `app.py` file.
 
-Then run the following command in the project root folder to start the local development server:
+Run the following command in the project root folder to start the local development server:
 
 ```
 flask run
@@ -85,20 +112,6 @@ Candidates can access API endpoints that have the following permission requireme
 `'get:applications'` - Get a list of submitted applications by candidate id
 
 There are also publicly available endpoints that do not require authorization. This is done to ensure every user can see the general information about jobs and candidates.
-
-### JWT tokens for roles
-
-The following JWT tokens must be inlcuded in the header of requests in order to access endpoints. It is recommended to save them in the environment variables to be able to access them.
-
-For company user: 
-```
-export user_token_company = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkpYN3U0NkUxMW9PSXRpVVpUemdKWiJ9.eyJpc3MiOiJodHRwczovL2pvYnBvcnRhbC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWYyNmZhM2U1M2E1OTkwMDM3OTU0Y2MzIiwiYXVkIjoiam9icG9ydGFsIiwiaWF0IjoxNTk2OTM3MDEwLCJleHAiOjE1OTcwMDkwMTAsImF6cCI6ImdHTktDbkt6dE5lTDJBWUV3RlFTZk1PVlpRd2xWZU1kIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6Y29tcGFuaWVzIiwiZGVsZXRlOnZhY2FuY2llcyIsImdldDpjYW5kaWRhdGVzIiwicGF0Y2g6Y29tcGFuaWVzIiwicGF0Y2g6dmFjYW5jaWVzIiwicG9zdDpjb21wYW5pZXMiLCJwb3N0OnZhY2FuY2llcyJdfQ.ZsbodUOtHtOFV-bYVa_JHIi7L1eEPA8R3IrvEkaMYE33rYRQUo8Mm5sZLxFWJbeUtvSzsNX6PCCLFxZaLUMv9W9as4FTqf3tXw1zZhRwUooNoYD-0KhVcrnWQni1OnNgQKj-MUiTuMq2PVzY-vAiteiayOb8YD4C-QMDQBYneOHsD2Uue89RW5dQGG5BNj0PEdqo4FoWBLF9ohn4qO_x6tfPaEV3EUHYpjIMMtYSUqoGPyDO7iIEOCD3VoNz8Uze9p9f8qWLDvrfTbsOugZtBU9LEkC-HjFVamrfiZoi3Jkr1lovornDErcmcLFzPmPtSAB81ZcSRnQcEEmwWZzljg'
-```
-
-For candidate user:
-```
-export user_token_candidate='eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkpYN3U0NkUxMW9PSXRpVVpUemdKWiJ9.eyJpc3MiOiJodHRwczovL2pvYnBvcnRhbC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWYyNzMyZWQ3M2E4YmIwMDNkMjE5ZGE1IiwiYXVkIjoiam9icG9ydGFsIiwiaWF0IjoxNTk2OTM3MDgxLCJleHAiOjE1OTcwMDkwODEsImF6cCI6ImdHTktDbkt6dE5lTDJBWUV3RlFTZk1PVlpRd2xWZU1kIiwic2NvcGUiOiIiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YXBwbGljYXRpb24iLCJkZWxldGU6Y2FuZGlkYXRlcyIsImdldDphcHBsaWNhdGlvbnMiLCJwYXRjaDpjYW5kaWRhdGVzIiwicG9zdDphcHBsaWNhdGlvbiIsInBvc3Q6Y2FuZGlkYXRlcyJdfQ.SnUkkAQkme-_vW2WmB1OmzginsSRyTPertME2KaBqK0qLX2KrTEkeKE60XtAton3AqGQCY4PM4CXKbVfN9pz5anGHkDqYBiRSShcSV3Y1sTl-btpMSPD_XJGquVc7-WSbc5j38NpnvrdTftYM_0v4FdtU5tbUpfRH3z4_nU5CVpQPIdMyHVFtZCvuKEQdTK_QQXATybEratcTFVFQZUCaxsj3Qlfhi852CJXaH9Q5ZqSnrda6IrphQoLN9TKotgObD2YWjhVMllXrJ6-jGLi-F6lPt9M6hJJBhOrQIskGd7FwQohBp7TJyIHj3yJ50ntYRloyspzeMFMOMePIjD0aA'
-```
 
 ## API endpoints
 
@@ -255,7 +268,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -d '{"name":"Google", "region": "California", "seeking_employee": true, "website_link": "https://www.google.com"}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_company" -X POST http://127.0.0.1:5000/companies
+curl -d '{"name":"Google", "region": "California", "seeking_employee": true, "website_link": "https://www.google.com"}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_COMPANY" -X POST http://127.0.0.1:5000/companies
 ```
 
 Sample response:
@@ -272,7 +285,7 @@ Sample response:
 
 Samples curl request:
 ```
-curl -d '{"address": "1600 Amphitheatre Parkway", "city": "Mountain View", "description": "Google LLC is an American multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware.", "employee": 10000}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_company" -X POST http://127.0.0.1:5000/companies/2
+curl -d '{"address": "1600 Amphitheatre Parkway", "city": "Mountain View", "description": "Google LLC is an American multinational technology company that specializes in Internet-related services and products, which include online advertising technologies, a search engine, cloud computing, software, and hardware.", "employee": 10000}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_COMPANY" -X POST http://127.0.0.1:5000/companies/2
 ```
 
 Sample response:
@@ -290,7 +303,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -X DELETE http://127.0.0.1:5000/companies/2 -H "Authorization: Bearer $user_token_company"
+curl -X DELETE http://127.0.0.1:5000/companies/2 -H "Authorization: Bearer $USER_TOKEN_COMPANY"
 ```
 
 Sample response:
@@ -310,7 +323,7 @@ Sample curl request:
 ```
 curl -d '{"company_id": 2, "job_description": "The company seeks to employ a developer with deep understanding of backend and front end technologies, who will be able to handle requests from multiple projects and take part in developing new ones",
 "job_title": "Full Stack Web Developer", "min_salary": 80000, "region": "Hesse, Germany",
-"requirements": "- 5+ projects, good knowledge of Python, Flask/Django, html, css, JS, Bootstrap, JQuery, - knowledge of Git"}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_company" -X POST http://127.0.0.1:5000/vacancies
+"requirements": "- 5+ projects, good knowledge of Python, Flask/Django, html, css, JS, Bootstrap, JQuery, - knowledge of Git"}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_COMPANY" -X POST http://127.0.0.1:5000/vacancies
 ```
 
 Sample response:
@@ -327,7 +340,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -d '{"benefits": "comfortable office in the city center, 30 days of vacation, career development and growth, opportunity to work remotely", "city": "Frankfurt"}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_company" -X PATCH http://127.0.0.1:5000/vacancies/2
+curl -d '{"benefits": "comfortable office in the city center, 30 days of vacation, career development and growth, opportunity to work remotely", "city": "Frankfurt"}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_COMPANY" -X PATCH http://127.0.0.1:5000/vacancies/2
 ```
 
 Sample response:
@@ -345,7 +358,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -X DELETE http://127.0.0.1:5000/vacancies/2 -H "Authorization: Bearer $user_token_company"
+curl -X DELETE http://127.0.0.1:5000/vacancies/2 -H "Authorization: Bearer $USER_TOKEN_COMPANY"
 ```
 
 Sample response:
@@ -363,7 +376,7 @@ Sample response:
 
 Samples curl request:
 ```
-curl -X GET http://127.0.0.1:5000/vacancies/2/applications -H "Authorization: Bearer $user_token_company"
+curl -X GET http://127.0.0.1:5000/vacancies/2/applications -H "Authorization: Bearer $USER_TOKEN_COMPANY"
 ```
 
 Sample response:
@@ -394,7 +407,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -d '{"date_of_birth": "date", "desired_industry": "IT", "desired_salary": 100000, "education": "Education information", "email": "sample@email.com", "facebook_link": "https://www.facebook.com/profilelink", "linkedin_link": "https://www.linkedin.com/in/profilelink", "name": "Max", "phone": "+1234567890", "region": "region", "seeking_job": true, "surname": "Musterman"}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_candidate" -X POST http://127.0.0.1:5000/candidates
+curl -d '{"date_of_birth": "date", "desired_industry": "IT", "desired_salary": 100000, "education": "Education information", "email": "sample@email.com", "facebook_link": "https://www.facebook.com/profilelink", "linkedin_link": "https://www.linkedin.com/in/profilelink", "name": "Max", "phone": "+1234567890", "region": "region", "seeking_job": true, "surname": "Musterman"}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_CANDIDATE" -X POST http://127.0.0.1:5000/candidates
 ```
 
 Sampel response:
@@ -411,7 +424,7 @@ Sampel response:
 
 Sample curl request:
 ```
-curl -d '{"address": "Addresss", "city": "City", "work_experience": "Information about the work experience"}' -H "Content-Type: application/json" -H "Authorization: Bearer $user_token_candidate" -X POST http://127.0.0.1:5000/candidates/2
+curl -d '{"address": "Addresss", "city": "City", "work_experience": "Information about the work experience"}' -H "Content-Type: application/json" -H "Authorization: Bearer $USER_TOKEN_CANDIDATE" -X POST http://127.0.0.1:5000/candidates/2
 ```
 
 Sample response:
@@ -429,7 +442,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -X DELETE http://127.0.0.1:5000/candidates/2 -H "Authorization: Bearer $user_token_candidate"
+curl -X DELETE http://127.0.0.1:5000/candidates/2 -H "Authorization: Bearer $USER_TOKEN_CANDIDATE"
 ```
 
 Sample response:
@@ -447,7 +460,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -X GET http://127.0.0.1:5000/candidates/2/applications -H "Authorization: Bearer $user_token_candidate"
+curl -X GET http://127.0.0.1:5000/candidates/2/applications -H "Authorization: Bearer $USER_TOKEN_CANDIDATE"
 ```
 
 Sample response:
@@ -476,7 +489,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl - d '{"company_id": 2, "candidate_id": 2, "cover_letter": "Some text here"}' -H "Authorization: Bearer $user_token_candidate" -X POST http://127.0.0.1:5000/vacancies/2/applications
+curl - d '{"company_id": 2, "candidate_id": 2, "cover_letter": "Some text here"}' -H "Authorization: Bearer $USER_TOKEN_CANDIDATE" -X POST http://127.0.0.1:5000/vacancies/2/applications
 ```
 
 Sample response:
@@ -493,7 +506,7 @@ Sample response:
 
 Sample curl request:
 ```
-curl -X DELETE http://127.0.0.1:5000/applications/2 -H "Authorization: Bearer $user_token_candidate"
+curl -X DELETE http://127.0.0.1:5000/applications/2 -H "Authorization: Bearer $USER_TOKEN_CANDIDATE"
 ```
 
 Sample response:
@@ -517,7 +530,7 @@ create database jobportal_test
 
 Then in the command line interface run the test file:
 
-`python test_app.py`
+`python3 test_app.py`
 
 ## Heroku Deployment and Base URL
 
