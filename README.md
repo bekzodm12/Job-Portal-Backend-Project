@@ -86,7 +86,7 @@ Candidates can access API endpoints that have the following permission requireme
 
 There are also publicly available endpoints that do not require authorization. This is done to ensure every user can see the general information about jobs and candidates.
 
-### JWT tockens for roles
+### JWT tokens for roles
 
 The following JWT tokens must be inlcuded in the header of requests in order to access endpoints. It is recommended to save them in the environment variables to be able to access them.
 
