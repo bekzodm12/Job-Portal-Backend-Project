@@ -48,9 +48,9 @@ def create_app(test_config=None):
     @app.route('/', methods=['GET'])
     def index():
         return jsonify({
-          'message': 'Welcome to My Job Portal Backend API Project. ' \
-          +'Please refer to the API documentation in README.md to view ' \
-          +'and test available endpoints.'
+          'message': 'Welcome to My Job Portal Backend API Project. '
+          + 'Please refer to the API documentation in README.md to view '
+          + 'and test available endpoints.'
         })
 
     '''
@@ -121,7 +121,7 @@ def create_app(test_config=None):
             return jsonify({
               'success': True
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -159,7 +159,7 @@ def create_app(test_config=None):
               'success': True,
               'id': company_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -180,7 +180,7 @@ def create_app(test_config=None):
               'success': True,
               'id': company_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -246,7 +246,7 @@ def create_app(test_config=None):
             return jsonify({
               'success': True
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -291,7 +291,7 @@ def create_app(test_config=None):
               'success': True,
               'id': candidate_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -311,7 +311,7 @@ def create_app(test_config=None):
               'success': True,
               'id': candidate_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -377,7 +377,7 @@ def create_app(test_config=None):
             return jsonify({
               'success': True
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -410,7 +410,7 @@ def create_app(test_config=None):
               'success': True,
               'id': vacancy_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -430,7 +430,7 @@ def create_app(test_config=None):
               'success': True,
               'id': vacancy_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 
@@ -511,7 +511,7 @@ def create_app(test_config=None):
     @app.route('/vacancies/<int:vacancy_id>/applications', methods=['POST'])
     @requires_auth('post:application')
     def add_application_by_vacancy_id(payload, vacancy_id):
-    # try:
+        # try:
         vacancy = Vacancy.query.filter(
           Vacancy.id == vacancy_id).one_or_none()
 
@@ -564,7 +564,7 @@ def create_app(test_config=None):
               'success': True,
               'id': application_id
             })
-        except:
+        except Exception:
             print(sys.exc_info())
             abort(422)
 

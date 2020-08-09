@@ -58,7 +58,6 @@ class commonMethods(db.Model):
         db.session.commit()
 
 
-
 '''
 Company
 
@@ -274,4 +273,3 @@ class Application(commonMethods):
         self.candidate_id = candidate_id
         self.cover_letter = cover_letter
         self.date_submitted = date_submitted
-
