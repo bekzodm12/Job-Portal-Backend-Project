@@ -10,9 +10,12 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
 
-# Connection instructions
-database_name = "jobportal"
-database_path = "postgres://{}/{}".format('postgres:mb@localhost:5432', database_name)
+# Connection instructions - uncomment the two lines below to work on local machine
+#database_name = "jobportal"
+#database_path = "postgres://{}/{}".format('postgres:mb@localhost:5432', database_name)
+
+# Database on Heroku
+database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
 
